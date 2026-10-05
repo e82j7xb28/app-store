@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر التطبيقات العربي</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { background: #f5f7fa; color: #222; }
+  
+  header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  header h1 { font-size: 28px; margin-bottom: 8px; }
+  header p { opacity: 0.9; font-size: 14px; }
+  
+  .search-box {
+    max-width: 600px;
+    margin: -20px auto 20px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    outline: none;
+  }
+  
+  .categories {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .categories::-webkit-scrollbar { display: none; }
+  .categories button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+  .categories button:hover, .categories button.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+  
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 0 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .app-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .app-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+  .app-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 12px;
+  }
+  .app-card h3 { font-size: 15px; margin-bottom: 4px; }
+  .app-card .category { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .app-card .downloads {
+    font-size: 12px;
+    color: #667eea;
+    font-weight: bold;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: #888;
+    font-size: 13px;
+    border-top: 1px solid #eee;
+  }
+  footer a { color: #667eea; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📱 متجر التطبيقات العربي</h1>
+  <p>تطبيقات مجانية من مطورين مستقلين</p>
+</header>
+
+<div class="search-box">
+  <input type="text" id="search" placeholder="🔍 ابحث عن تطبيق...">
+</div>
+
+<div class="categories" id="categories">
+  <button class="active" data-cat="all">الكل</button>
+  <button data-cat="tools">أدوات</button>
+  <button data-cat="games">ألعاب</button>
+  <button data-cat="education">تعليم</button>
+  <button data-cat="social">تواصل</button>
+  <button data-cat="productivity">إنتاجية</button>
+</div>
+
+<div class="apps-grid" id="appsGrid"></div>
+
+<footer>
+  صُنع بـ ❤️ في سوريا | <a href="https://github.com/e82j7xb28/app-store">GitHub</a>
+</footer>
+
+<script>
+// بيانات تجريبية - سنستبدلها لاحقًا بقاعدة بيانات
+const apps = [
+  { id: 1, name: 'تطبيق الطقس', category: 'tools', catName: 'أدوات', downloads: 1250, icon: '🌤️' },
+  { id: 2, name: 'لعبة الذاكرة', category: 'games', catName: 'ألعاب', downloads: 3400, icon: '🎮' },
+  { id: 3, name: 'تعلم العربية', category: 'education', catName: 'تعليم', downloads: 890, icon: '📚' },
+  { id: 4, name: 'محادثة آمنة', category: 'social', catName: 'تواصل', downloads: 5600, icon: '💬' },
+  { id: 5, name: 'مفكرة المهام', category: 'productivity', catName: 'إنتاجية', downloads: 2100, icon: '✅' },
+  { id: 6, name: 'آلة حاسبة', category: 'tools', catName: 'أدوات', downloads: 4200, icon: '🧮' },
+  { id: 7, name: 'لعبة الشطرنج', category: 'games', catName: 'ألعاب', downloads: 7800, icon: '♟️' },
+  { id: 8, name: 'تعلم الإنجليزية', category: 'education', catName: 'تعليم', downloads: 6300, icon: '🔤' },
+];
+
+let currentCategory = 'all';
+let searchQuery = '';
+
+function renderApps() {
+  const grid = document.getElementById('appsGrid');
+  const filtered = apps.filter(app => {
+    const matchCat = currentCategory === 'all' || app.category === currentCategory;
+    const matchSearch = app.name.includes(searchQuery);
+    return matchCat && matchSearch;
+  });
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#888; padding:40px;">لا توجد تطبيقات</p>';
+    return;
+  }
+  
+  grid.innerHTML = filtered.map(app => `
+    <a href="#" class="app-card">
+      <div class="app-icon">${app.icon}</div>
+      <h3>${app.name}</h3>
+      <div class="category">${app.catName}</div>
+      <div class="downloads">⬇ ${app.downloads.toLocaleString()}</div>
+    </a>
+  `).join('');
+}
+
+// البحث
+document.getElementById('search').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderApps();
+});
+
+// الفئات
+document.querySelectorAll('#categories button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#categories button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.dataset.cat;
+    renderApps();
+  });
+});
+
+renderApps();
+</script>
+
+</body>
+</html>
